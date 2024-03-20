@@ -31,7 +31,6 @@ class DecisionTreeClassifier:
             splitted_data = self.__get_best_split(ds, num_samples, num_features)
 
             if splitted_data["info_gain"] > 0:
-                print("x" + splitted_data['feature_index'].__str__() + " " + splitted_data["threshold"].__str__())
                 left_sub_tree = self.__build_tree(splitted_data['dataset_left'], curr_depth + 1)
                 right_sub_tree = self.__build_tree(splitted_data['dataset_right'], curr_depth + 1)
 
@@ -39,7 +38,7 @@ class DecisionTreeClassifier:
                             splitted_data['info_gain'], )
 
             leaf_value = self.__calculate_leaf_node(y_data)
-            print("leaf_value" + leaf_value.__str__())
+
             return Node(value=leaf_value)
 
     def __get_best_split(self, ds, num_samples, num_features):
@@ -65,6 +64,7 @@ class DecisionTreeClassifier:
                         best_split["dataset_right"] = dataset_right
                         best_split["info_gain"] = curr_info_gain
                         max_info_gain = curr_info_gain
+        print(best_split["info_gain"])
         return best_split
 
     def __split(self, ds, feature_index, threshold):
@@ -76,8 +76,7 @@ class DecisionTreeClassifier:
         l_weight = len(left_dataset) / len(parent_dataset)
         r_weight = len(right_dataset) / len(parent_dataset)
 
-        gain = self.__gini_index(parent_dataset) - l_weight * self.__gini_index(
-            left_dataset) - r_weight * self.__gini_index(
+        gain = self.__gini_index(parent_dataset) - l_weight * self.__gini_index(left_dataset) - r_weight * self.__gini_index(
             right_dataset)
         return gain
 
@@ -93,20 +92,18 @@ class DecisionTreeClassifier:
         y_data = list(y_data)
         return max(y_data, key=y_data.count)
 
-    def print_tree(self, tr=None, indent=" "):
+    def print_tree(self, tree=None, indent=" "):
         time.sleep(1)
-        if not tr:
-            tr = self.root
-            print("--------------")
-
-        if tr.value is not None:
-            print(tr.value)
+        if not tree:
+            tree = self.root
+        if tree.value is not None:
+            print(tree.value)
         else:
-            print("x_" + str(tr.feature_index), " <= ", tr.threshold, "?")
+            print("x_" + str(tree.feature_index), " <= ", tree.threshold, "?", tree.info_gain)
             print("left:")
-            self.print_tree(tr.left, " ")
+            self.print_tree(tree.left, indent + indent)
             print("right:")
-            self.print_tree(tr.right, " ")
+            self.print_tree(tree.right, indent + indent)
 
     def fit(self, ds):
         self.root = self.__build_tree(ds)
@@ -119,19 +116,19 @@ class DecisionTreeClassifier:
         predictions = [self.make_prediction(row, self.root) for row in x_data.values]
         return predictions
 
-    def make_prediction(self, row, tr):
+    def make_prediction(self, row, tree):
 
-        if tr is not None and tr.value is not None:
+        if tree is not None and tree.value is not None:
             # print(tree.value)
-            return tr.value
-        if tr is None:
+            return tree.value
+        if tree is None:
             return None
-        feature_val = row[tr.feature_index]
+        feature_val = row[tree.feature_index]
         # print(str(feature_val)+" --- "+str(tree.feature_index))
-        if feature_val <= float(tr.threshold):
-            return self.make_prediction(row, tr.left)
+        if feature_val <= float(tree.threshold):
+            return self.make_prediction(row, tree.left)
         else:
-            return self.make_prediction(row, tr.right)
+            return self.make_prediction(row, tree.right)
 
     def accuracy_score(self, y_pred, y_test):
         count = 0

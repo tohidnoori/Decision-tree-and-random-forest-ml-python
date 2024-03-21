@@ -38,9 +38,9 @@ class DecisionTreeClassifier:
                 return Node(splitted_data['feature_index'], splitted_data['threshold'], left_sub_tree, right_sub_tree,
                             splitted_data['info_gain'], )
 
-            leaf_value = self.__calculate_leaf_node(y_data)
-            print("leaf_value" + leaf_value.__str__())
-            return Node(value=leaf_value)
+        leaf_value = self.__calculate_leaf_node(y_data)
+        print("leaf_value" + leaf_value.__str__())
+        return Node(value=leaf_value)
 
     def __get_best_split(self, ds, num_samples, num_features):
 
@@ -93,20 +93,19 @@ class DecisionTreeClassifier:
         y_data = list(y_data)
         return max(y_data, key=y_data.count)
 
-    def print_tree(self, tr=None, indent=" "):
-        time.sleep(1)
-        if not tr:
-            tr = self.root
-            print("--------------")
+    def print_tree(self):
+        self.__print_df_tree(self.root)
 
-        if tr.value is not None:
-            print(tr.value)
-        else:
-            print("x_" + str(tr.feature_index), " <= ", tr.threshold, "?")
-            print("left:")
-            self.print_tree(tr.left, " ")
-            print("right:")
-            self.print_tree(tr.right, " ")
+    def __print_df_tree(self, tr, indent=" "):
+        if tr is not None:
+            if tr.value is not None:
+                print(tr.value)
+            else:
+                print("x_" + str(tr.feature_index), " <= ", tr.threshold, "?")
+                print("left:")
+                self.__print_df_tree(tr.left, indent+indent)
+                print("right:")
+                self.__print_df_tree(tr.right, indent+indent)
 
     def fit(self, ds):
         self.root = self.__build_tree(ds)

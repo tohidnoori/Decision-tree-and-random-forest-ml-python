@@ -31,7 +31,7 @@ class DecisionTreeClassifier:
             splitted_data = self.__get_best_split(ds, num_samples, num_features)
 
             if splitted_data["info_gain"] > 0:
-                print("x" + splitted_data['feature_index'].__str__() + " " + splitted_data["threshold"].__str__())
+                # print("x" + splitted_data['feature_index'].__str__() + " " + splitted_data["threshold"].__str__())
                 left_sub_tree = self.__build_tree(splitted_data['dataset_left'], curr_depth + 1)
                 right_sub_tree = self.__build_tree(splitted_data['dataset_right'], curr_depth + 1)
 
@@ -39,7 +39,7 @@ class DecisionTreeClassifier:
                             splitted_data['info_gain'], )
 
         leaf_value = self.__calculate_leaf_node(y_data)
-        print("leaf_value" + leaf_value.__str__())
+        # print("leaf_value" + leaf_value.__str__())
         return Node(value=leaf_value)
 
     def __get_best_split(self, ds, num_samples, num_features):
@@ -126,7 +126,6 @@ class DecisionTreeClassifier:
         if tr is None:
             return None
         feature_val = row[tr.feature_index]
-        # print(str(feature_val)+" --- "+str(tree.feature_index))
         if feature_val <= float(tr.threshold):
             return self.make_prediction(row, tr.left)
         else:

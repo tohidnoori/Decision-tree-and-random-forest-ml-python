@@ -6,7 +6,7 @@
 It covers some disadvantages of a simple decison tree by it randomness behavior.
 <br/>
 <br/>
-For this experiment, I used Jupter Notebook, a web-based interactive computing platform, and the well-known Python module scikit-learn.
+For this experiment, I used Jupyter Notebook, a web-based interactive computing platform, and the well-known Python module scikit-learn.
 I also write the decision tree classifier by my self and compare it to the python library one,and I use Gini impurity instead of entropy in the information gain section.
 <br/>
 - - - -
